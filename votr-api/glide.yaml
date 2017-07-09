@@ -1,0 +1,10 @@
+package: github.com/alifradityar/votr/votr-api
+ignore:
+- github.com/alifradityar/votr
+import:
+- package: github.com/gorilla/mux
+- package: github.com/kelseyhightower/envconfig
+- package: gopkg.in/go-playground/validator.v9
+- package: github.com/satori/go.uuid
+- package: github.com/facebookgo/inject
+- package: github.com/facebookgo/structtag

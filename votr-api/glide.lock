@@ -1,0 +1,18 @@
+hash: 2ce805e650185c1353ab88f15733bef6cab1302dc6501bf9d246bef6e06300ba
+updated: 2017-07-09T23:07:45.269470308+07:00
+imports:
+- name: github.com/facebookgo/inject
+  version: cc1aa653e50f6a9893bcaef89e673e5b24e1e97b
+- name: github.com/facebookgo/structtag
+  version: 217e25fb96916cc60332e399c9aa63f5c422ceed
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
+- name: github.com/gorilla/mux
+  version: 757bef944d0f21880861c2dd9c871ca543023cba
+- name: github.com/kelseyhightower/envconfig
+  version: 5c008110b20b657eb7e005b83d0a5f6aa6bb5f4b
+- name: github.com/satori/go.uuid
+  version: b061729afc07e77a8aa4fad0a2fd840958f1942a
+- name: gopkg.in/go-playground/validator.v9
+  version: 691ea5506371685479307baaf0e623e850de4dbf
+testImports: []
