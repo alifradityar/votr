@@ -2,64 +2,58 @@ import React from 'react';
 import { Link } from 'react-router';
 import agent from '../agent';
 import { connect } from 'react-redux';
-import { ARTICLE_FAVORITED, ARTICLE_UNFAVORITED } from '../constants/actionTypes';
+import { ARTICLE_UPVOTED, ARTICLE_DOWNVOTED } from '../constants/actionTypes';
 
-const FAVORITED_CLASS = 'btn btn-sm btn-primary';
-const NOT_FAVORITED_CLASS = 'btn btn-sm btn-outline-primary';
+const styles = {
+  voteContainer: {
+    marginTop: '1.2rem'
+  },
+  vote: {
+    margin: '0.2rem'
+  }
+};
 
 const mapDispatchToProps = dispatch => ({
-  favorite: slug => dispatch({
-    type: ARTICLE_FAVORITED,
-    payload: agent.Articles.favorite(slug)
+  upvote: id => dispatch({
+    type: ARTICLE_UPVOTED,
+    payload: agent.Articles.upvote(id)
   }),
-  unfavorite: slug => dispatch({
-    type: ARTICLE_UNFAVORITED,
-    payload: agent.Articles.unfavorite(slug)
+  downvote: id => dispatch({
+    type: ARTICLE_DOWNVOTED,
+    payload: agent.Articles.downvote(id)
   })
 });
 
 const ArticlePreview = props => {
   const article = props.article;
-  const favoriteButtonClass = article.favorited ?
-    FAVORITED_CLASS :
-    NOT_FAVORITED_CLASS;
 
-  const handleClick = ev => {
+  const handleUpvote = ev => {
     ev.preventDefault();
-    if (article.favorited) {
-      props.unfavorite(article.slug);
-    } else {
-      props.favorite(article.slug);
-    }
+    props.upvote(article.id)
+  };
+
+  const handleDownvote = ev => {
+    ev.preventDefault();
+    props.downvote(article.id)
   };
 
   return (
     <div className="article-preview">
       <div className="article-meta">
-        <Link>
-          <img src={article.author.image} alt={article.author.username} />
-        </Link>
-
-        <div className="info">
-          <Link>
-            {article.author.username}
-          </Link>
-          <span className="date">
-            {new Date(article.createdAt).toDateString()}
-          </span>
-        </div>
-
-        <div className="pull-xs-right">
-          <button className={favoriteButtonClass} onClick={handleClick}>
-            <i className="ion-heart"></i> {article.favoritesCount}
+        <div className="pull-xs-right" style={styles.voteContainer}>
+          {article.upvote - article.downvote}
+          <button style={styles.vote} className="btn btn-sm btn-outline-primary" onClick={handleUpvote}>
+            <i className="ion-arrow-up-b"></i> 
+          </button>
+          <button style={styles.vote} className="btn btn-sm btn-outline-primary" onClick={handleDownvote}>
+            <i className="ion-arrow-down-b"></i>
           </button>
         </div>
       </div>
 
       <Link className="preview-link">
         <h1>{article.title}</h1>
-        <p>{article.description}</p>
-        <span>Read more...</span>
+        <p>Posted at {new Date(article.created).toDateString()}</p>
       </Link>
     </div>
   );

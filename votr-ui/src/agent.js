@@ -3,9 +3,8 @@ import _superagent from 'superagent';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
-const API_ROOT = 'https://conduit.productionready.io/api';
+const API_ROOT = 'http://localhost:7007';
 
-const encode = encodeURIComponent;
 const responseBody = res => res.body;
 
 let token = null;
@@ -26,52 +25,26 @@ const requests = {
     superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody)
 };
 
-const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
+const limit = (count, p) => `page=${p || 1}&size=${count || 10}`;
 const omitSlug = article => Object.assign({}, article, { slug: undefined })
 const Articles = {
   all: page =>
-    requests.get(`/articles?${limit(10, page)}`),
-  byAuthor: (author, page) =>
-    requests.get(`/articles?author=${encode(author)}&${limit(5, page)}`),
+    requests.get(`/topic?${limit(10, page)}`),
   del: slug =>
-    requests.del(`/articles/${slug}`),
-  favorite: slug =>
-    requests.post(`/articles/${slug}/favorite`),
-  favoritedBy: (author, page) =>
-    requests.get(`/articles?favorited=${encode(author)}&${limit(5, page)}`),
+    requests.del(`/topic/${slug}`),
   feed: () =>
-    requests.get('/articles/feed?limit=10&offset=0'),
+    requests.get('/topic?page=1&size=10'),
   get: slug =>
-    requests.get(`/articles/${slug}`),
-  unfavorite: slug =>
-    requests.del(`/articles/${slug}/favorite`),
-  update: article =>
-    requests.put(`/articles/${article.slug}`, { article: omitSlug(article) }),
-  create: article =>
-    requests.post('/articles', { article })
-};
-
-const Comments = {
-  create: (slug, comment) =>
-    requests.post(`/articles/${slug}/comments`, { comment }),
-  delete: (slug, commentId) =>
-    requests.del(`/articles/${slug}/comments/${commentId}`),
-  forArticle: slug =>
-    requests.get(`/articles/${slug}/comments`)
-};
-
-const Profile = {
-  follow: username =>
-    requests.post(`/profiles/${username}/follow`),
-  get: username =>
-    requests.get(`/profiles/${username}`),
-  unfollow: username =>
-    requests.del(`/profiles/${username}/follow`)
+    requests.get(`/topic/${slug}`),
+  upvote: slug =>
+    requests.post(`/topic/${slug}/upvote`),
+  downvote: slug =>
+    requests.post(`/topic/${slug}/downvote`),
+  create: topic =>
+    requests.post('/topic', { topic })
 };
 
 export default {
   Articles,
-  Comments,
-  Profile,
   setToken: _token => { token = _token; }
 };

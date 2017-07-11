@@ -31,15 +31,11 @@ class Editor extends React.Component {
     const updateFieldEvent =
       key => ev => this.props.onUpdateField(key, ev.target.value);
     this.changeTitle = updateFieldEvent('title');
-    this.changeDescription = updateFieldEvent('description');
-    this.changeBody = updateFieldEvent('body');
 
     this.submitForm = ev => {
       ev.preventDefault();
       const article = {
         title: this.props.title,
-        description: this.props.description,
-        body: this.props.body
       };
 
       const slug = { slug: this.props.articleSlug };
@@ -91,25 +87,6 @@ class Editor extends React.Component {
                       placeholder="Article Title"
                       value={this.props.title}
                       onChange={this.changeTitle} />
-                  </fieldset>
-
-                  <fieldset className="form-group">
-                    <input
-                      className="form-control"
-                      type="text"
-                      placeholder="What's this article about?"
-                      value={this.props.description}
-                      onChange={this.changeDescription} />
-                  </fieldset>
-
-                  <fieldset className="form-group">
-                    <textarea
-                      className="form-control"
-                      rows="8"
-                      placeholder="Write your article (in markdown)"
-                      value={this.props.body}
-                      onChange={this.changeBody}>
-                    </textarea>
                   </fieldset>
 
                   <button

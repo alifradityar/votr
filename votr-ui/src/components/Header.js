@@ -12,7 +12,7 @@ const HeaderNavView = props => {
       </li>
 
       <li className="nav-item">
-        <Link to="/" className="nav-link">
+        <Link to="/editor" className="nav-link">
           Create
         </Link>
       </li>

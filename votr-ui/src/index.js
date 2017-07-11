@@ -14,7 +14,6 @@ ReactDOM.render((
       <Route path="/" component={App}>
         <IndexRoute component={Home} />
         <Route path="editor" component={Editor} />
-        <Route path="editor/:slug" component={Editor} />
       </Route>
     </Router>
   </Provider>

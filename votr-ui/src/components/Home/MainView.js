@@ -24,7 +24,7 @@ const YourFeedTab = props => {
   return null;
 };
 
-const GlobalFeedTab = props => {
+const ListArticleTab = props => {
   const clickHandler = ev => {
     ev.preventDefault();
     props.onTabClick('all', agent.Articles.all, agent.Articles.all());
@@ -35,7 +35,7 @@ const GlobalFeedTab = props => {
         href=""
         className={ props.tab === 'all' ? 'nav-link active' : 'nav-link' }
         onClick={clickHandler}>
-        Global Feed
+        List Article
       </a>
     </li>
   );
@@ -61,7 +61,7 @@ const MainView = props => {
             tab={props.tab}
             onTabClick={props.onTabClick} />
 
-          <GlobalFeedTab tab={props.tab} onTabClick={props.onTabClick} />
+          <ListArticleTab tab={props.tab} onTabClick={props.onTabClick} />
 
         </ul>
       </div>

@@ -101,6 +101,10 @@ func (handler *Handler) GetTopicHandler(w http.ResponseWriter, r *http.Request) 
 	ok(w, topic)
 }
 
+func (handler *Handler) OptionsHandler(w http.ResponseWriter, r *http.Request) {
+	ok(w, nil)
+}
+
 // response utility
 func ok(w http.ResponseWriter, data interface{}) {
 	resp := map[string]interface{}{
@@ -116,6 +120,9 @@ func ok(w http.ResponseWriter, data interface{}) {
 		js, _ = json.Marshal(resp)
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers")
 	w.WriteHeader(200)
 	w.Write(js)
 }
@@ -134,6 +141,9 @@ func badRequest(w http.ResponseWriter, data interface{}, err error) {
 		js, _ = json.Marshal(resp)
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers")
 	w.WriteHeader(400)
 	w.Write(js)
 }
@@ -152,6 +162,9 @@ func internalServerError(w http.ResponseWriter, data interface{}, err error) {
 		js, _ = json.Marshal(resp)
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers")
 	w.WriteHeader(500)
 	w.Write(js)
 }

@@ -1,28 +1,24 @@
 import {
-  ARTICLE_FAVORITED,
-  ARTICLE_UNFAVORITED,
+  ARTICLE_UPVOTED,
+  ARTICLE_DOWNVOTED,
   SET_PAGE,
   HOME_PAGE_LOADED,
   HOME_PAGE_UNLOADED,
   CHANGE_TAB,
-  PROFILE_PAGE_LOADED,
-  PROFILE_PAGE_UNLOADED,
-  PROFILE_FAVORITES_PAGE_LOADED,
-  PROFILE_FAVORITES_PAGE_UNLOADED
 } from '../constants/actionTypes';
 
 export default (state = {}, action) => {
   switch (action.type) {
-    case ARTICLE_FAVORITED:
-    case ARTICLE_UNFAVORITED:
+    case ARTICLE_UPVOTED:
+    case ARTICLE_DOWNVOTED:
       return {
         ...state,
         articles: state.articles.map(article => {
           if (article.slug === action.payload && action.payload.article.slug) {
             return {
               ...article,
-              favorited: action.payload.article.favorited,
-              favoritesCount: action.payload.article.favoritesCount
+              upvoted: action.payload.article.upvoted,
+              downvoted: action.payload.article.downvoted
             };
           }
           return article;
@@ -36,11 +32,12 @@ export default (state = {}, action) => {
         currentPage: action.page
       };
     case HOME_PAGE_LOADED:
+      console.log("HOME_PAGE_LOADED")
       console.log(action.payload)
       return {
         ...state,
         pager: action.pager,
-        articles: action.payload[0].articles,
+        articles: action.payload[0].data,
         articlesCount: action.payload[0].articlesCount,
         currentPage: 0,
         tab: action.tab
@@ -56,18 +53,6 @@ export default (state = {}, action) => {
         tab: action.tab,
         currentPage: 0
       };
-    case PROFILE_PAGE_LOADED:
-    case PROFILE_FAVORITES_PAGE_LOADED:
-      return {
-        ...state,
-        pager: action.pager,
-        articles: action.payload[0].articles,
-        articlesCount: action.payload[0].articlesCount,
-        currentPage: 0
-      };
-    case PROFILE_PAGE_UNLOADED:
-    case PROFILE_FAVORITES_PAGE_UNLOADED:
-      return {};
     default:
       return state;
   }
