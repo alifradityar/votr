@@ -12,6 +12,8 @@ func CreateRouter(rh handler.Root) *mux.Router {
 	router.HandleFunc("/topic/all", rh.GetAllTopicHandler).Methods("GET")
 	router.HandleFunc("/topic", rh.GetTopicPageHandler).Methods("GET")
 	router.HandleFunc("/topic", rh.CreateTopicHandler).Methods("POST")
-	// router.HandleFunc("/topic/{id}/upvote")
+	router.HandleFunc("/topic/{id}", rh.GetTopicHandler).Methods("POST")
+	router.HandleFunc("/topic/{id}/upvote", rh.UpvoteTopicHandler).Methods("POST")
+	router.HandleFunc("/topic/{id}/downvote", rh.DownvoteTopicHandler).Methods("POST")
 	return router
 }

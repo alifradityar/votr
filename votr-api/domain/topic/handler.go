@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
+	uuid "github.com/satori/go.uuid"
 )
 
 // Handler handle HTTP request regarding Topic domain
@@ -46,6 +49,51 @@ func (handler *Handler) CreateTopicHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	topic, err := handler.Service.CreateTopic(topicRequest.Title)
+	if err != nil {
+		badRequest(w, topic, err)
+		return
+	}
+	ok(w, topic)
+}
+
+func (handler *Handler) UpvoteTopicHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := uuid.FromString(vars["id"])
+	if err != nil {
+		badRequest(w, nil, err)
+		return
+	}
+	topic, err := handler.Service.UpvoteTopic(id)
+	if err != nil {
+		badRequest(w, topic, err)
+		return
+	}
+	ok(w, topic)
+}
+
+func (handler *Handler) DownvoteTopicHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := uuid.FromString(vars["id"])
+	if err != nil {
+		badRequest(w, nil, err)
+		return
+	}
+	topic, err := handler.Service.DownvoteTopic(id)
+	if err != nil {
+		badRequest(w, topic, err)
+		return
+	}
+	ok(w, topic)
+}
+
+func (handler *Handler) GetTopicHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := uuid.FromString(vars["id"])
+	if err != nil {
+		badRequest(w, nil, err)
+		return
+	}
+	topic, err := handler.Service.GetTopic(id)
 	if err != nil {
 		badRequest(w, topic, err)
 		return
