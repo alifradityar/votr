@@ -1,0 +1,1 @@
+Based on https://thinkster.io/tutorials/build-a-real-world-react-redux-application
