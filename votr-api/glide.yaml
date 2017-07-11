@@ -8,3 +8,5 @@ import:
 - package: github.com/satori/go.uuid
 - package: github.com/facebookgo/inject
 - package: github.com/facebookgo/structtag
+- package: github.com/guregu/null
+  version: ^3.1.0

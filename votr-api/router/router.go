@@ -9,6 +9,9 @@ import (
 // CreateRouter create new router object with all routing definition
 func CreateRouter(rh handler.Root) *mux.Router {
 	router := mux.NewRouter()
-	router.HandleFunc("/topic", rh.HelloHandler).Methods("GET")
+	router.HandleFunc("/topic/all", rh.GetAllTopicHandler).Methods("GET")
+	router.HandleFunc("/topic", rh.GetTopicPageHandler).Methods("GET")
+	router.HandleFunc("/topic", rh.CreateTopicHandler).Methods("POST")
+	// router.HandleFunc("/topic/{id}/upvote")
 	return router
 }
