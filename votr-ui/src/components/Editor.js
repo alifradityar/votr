@@ -38,10 +38,7 @@ class Editor extends React.Component {
         title: this.props.title,
       };
 
-      const slug = { slug: this.props.articleSlug };
-      const promise = this.props.articleSlug ?
-        agent.Articles.update(Object.assign(article, slug)) :
-        agent.Articles.create(article);
+      const promise = agent.Articles.create(article);
 
       this.props.onSubmit(promise);
     };

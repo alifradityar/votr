@@ -2,10 +2,10 @@ package topic
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
+	"github.com/alifradityar/votr/votr-api/resp"
 	"github.com/gorilla/mux"
 	uuid "github.com/satori/go.uuid"
 )
@@ -19,13 +19,14 @@ type Handler struct {
 func (handler *Handler) GetAllTopicHandler(w http.ResponseWriter, r *http.Request) {
 	topics, err := handler.Service.GetAll()
 	if err != nil {
-		badRequest(w, topics, err)
+		resp.BadRequest(w, topics, err)
 		return
 	}
-	ok(w, topics)
+	resp.OK(w, topics)
 }
 
 func (handler *Handler) GetTopicPageHandler(w http.ResponseWriter, r *http.Request) {
+	keyword := r.FormValue("keyword")
 	page, _ := strconv.Atoi(r.FormValue("page"))
 	if page < 1 {
 		page = 1
@@ -34,137 +35,108 @@ func (handler *Handler) GetTopicPageHandler(w http.ResponseWriter, r *http.Reque
 	if size < 1 {
 		size = 1
 	}
-	topics, err := handler.Service.GetTopicPage(page, size)
+	topics, err := handler.Service.GetTopicPage(keyword, page, size)
 	if err != nil {
-		badRequest(w, topics, err)
+		resp.BadRequest(w, topics, err)
 		return
 	}
-	ok(w, topics)
+	resp.OK(w, topics)
 }
 
 func (handler *Handler) CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 	var topicRequest TopicRequest
 	if err := json.NewDecoder(r.Body).Decode(&topicRequest); err != nil {
-		badRequest(w, nil, err)
+		resp.BadRequest(w, nil, err)
 		return
 	}
 	topic, err := handler.Service.CreateTopic(topicRequest.Title)
 	if err != nil {
-		badRequest(w, topic, err)
+		resp.BadRequest(w, topic, err)
 		return
 	}
-	ok(w, topic)
+	resp.OK(w, topic)
+}
+
+func (handler *Handler) UpdateTopicHandler(w http.ResponseWriter, r *http.Request) {
+	var topicRequest TopicRequest
+	if err := json.NewDecoder(r.Body).Decode(&topicRequest); err != nil {
+		resp.BadRequest(w, nil, err)
+		return
+	}
+	vars := mux.Vars(r)
+	id, err := uuid.FromString(vars["id"])
+	if err != nil {
+		resp.BadRequest(w, nil, err)
+		return
+	}
+	topic, err := handler.Service.UpdateTopic(id, topicRequest.Title)
+	if err != nil {
+		resp.BadRequest(w, topic, err)
+		return
+	}
+	resp.OK(w, topic)
+}
+
+func (handler *Handler) DeleteTopicHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := uuid.FromString(vars["id"])
+	if err != nil {
+		resp.BadRequest(w, nil, err)
+		return
+	}
+	err = handler.Service.DeleteTopic(id)
+	if err != nil {
+		resp.BadRequest(w, nil, err)
+		return
+	}
+	resp.OK(w, nil)
 }
 
 func (handler *Handler) UpvoteTopicHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.FromString(vars["id"])
 	if err != nil {
-		badRequest(w, nil, err)
+		resp.BadRequest(w, nil, err)
 		return
 	}
 	topic, err := handler.Service.UpvoteTopic(id)
 	if err != nil {
-		badRequest(w, topic, err)
+		resp.BadRequest(w, topic, err)
 		return
 	}
-	ok(w, topic)
+	resp.OK(w, topic)
 }
 
 func (handler *Handler) DownvoteTopicHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.FromString(vars["id"])
 	if err != nil {
-		badRequest(w, nil, err)
+		resp.BadRequest(w, nil, err)
 		return
 	}
 	topic, err := handler.Service.DownvoteTopic(id)
 	if err != nil {
-		badRequest(w, topic, err)
+		resp.BadRequest(w, topic, err)
 		return
 	}
-	ok(w, topic)
+	resp.OK(w, topic)
 }
 
 func (handler *Handler) GetTopicHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.FromString(vars["id"])
 	if err != nil {
-		badRequest(w, nil, err)
+		resp.BadRequest(w, nil, err)
 		return
 	}
 	topic, err := handler.Service.GetTopic(id)
 	if err != nil {
-		badRequest(w, topic, err)
+		resp.BadRequest(w, topic, err)
 		return
 	}
-	ok(w, topic)
+	resp.OK(w, topic)
 }
 
 func (handler *Handler) OptionsHandler(w http.ResponseWriter, r *http.Request) {
-	ok(w, nil)
-}
-
-// response utility
-func ok(w http.ResponseWriter, data interface{}) {
-	resp := map[string]interface{}{
-		"data":  data,
-		"error": nil,
-	}
-	js, err := json.Marshal(resp)
-	if err != nil {
-		resp := map[string]interface{}{
-			"data":  nil,
-			"error": fmt.Sprintf("%s", err),
-		}
-		js, _ = json.Marshal(resp)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers")
-	w.WriteHeader(200)
-	w.Write(js)
-}
-
-func badRequest(w http.ResponseWriter, data interface{}, err error) {
-	resp := map[string]interface{}{
-		"data":  data,
-		"error": fmt.Sprintf("%s", err),
-	}
-	js, err := json.Marshal(resp)
-	if err != nil {
-		resp := map[string]interface{}{
-			"data":  nil,
-			"error": fmt.Sprintf("%s", err),
-		}
-		js, _ = json.Marshal(resp)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers")
-	w.WriteHeader(400)
-	w.Write(js)
-}
-
-func internalServerError(w http.ResponseWriter, data interface{}, err error) {
-	resp := map[string]interface{}{
-		"data":  data,
-		"error": fmt.Sprintf("%s", err),
-	}
-	js, err := json.Marshal(resp)
-	if err != nil {
-		resp := map[string]interface{}{
-			"data":  nil,
-			"error": fmt.Sprintf("%s", err),
-		}
-		js, _ = json.Marshal(resp)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers")
-	w.WriteHeader(500)
-	w.Write(js)
+	resp.OK(w, nil)
 }

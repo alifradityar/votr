@@ -14,11 +14,11 @@ export default (state = {}, action) => {
       return {
         ...state,
         articles: state.articles.map(article => {
-          if (article.slug === action.payload && action.payload.article.slug) {
+          if (article.id === action.payload.data.id) {
             return {
               ...article,
-              upvoted: action.payload.article.upvoted,
-              downvoted: action.payload.article.downvoted
+              upvote: action.payload.data.upvote,
+              downvote: action.payload.data.downvote
             };
           }
           return article;
@@ -27,19 +27,17 @@ export default (state = {}, action) => {
     case SET_PAGE:
       return {
         ...state,
-        articles: action.payload.articles,
-        articlesCount: action.payload.articlesCount,
+        articles: action.payload.topics,
+        articlesCount: action.payload.topics.total,
         currentPage: action.page
       };
     case HOME_PAGE_LOADED:
-      console.log("HOME_PAGE_LOADED")
-      console.log(action.payload)
       return {
         ...state,
         pager: action.pager,
-        articles: action.payload[0].data,
-        articlesCount: action.payload[0].articlesCount,
-        currentPage: 0,
+        articles: action.payload[0].data.topics,
+        articlesCount: action.payload[0].data.total,
+        currentPage: 1,
         tab: action.tab
       };
     case HOME_PAGE_UNLOADED:
@@ -48,10 +46,10 @@ export default (state = {}, action) => {
       return {
         ...state,
         pager: action.pager,
-        articles: action.payload.articles,
-        articlesCount: action.payload.articlesCount,
+        articles: action.payload.data.topics,
+        articlesCount: action.payload.data.total,
         tab: action.tab,
-        currentPage: 0
+        currentPage: 1
       };
     default:
       return state;

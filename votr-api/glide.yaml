@@ -10,3 +10,8 @@ import:
 - package: github.com/facebookgo/structtag
 - package: github.com/guregu/null
   version: ^3.1.0
+- package: github.com/go-sql-driver/mysql
+  version: ^1.3.0
+- package: github.com/jmoiron/sqlx
+- package: gopkg.in/redis.v5
+  version: ^6.6.0
